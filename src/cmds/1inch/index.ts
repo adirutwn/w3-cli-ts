@@ -58,32 +58,27 @@ export class OneInchCmd implements Cmd {
           toToken.symbol(),
           toToken.decimals(),
         ])
-        const amountWei = ethers.utils.parseUnits(opts.amount.toString(), fromDecimals)
-
-        console.log(`> Twapping ${opts.amount} ${fromTokenSymbol} -> ${toTokenSymbol} per tx`)
         console.log(`> Signer: ${signerAddress}`)
 
         // watch
         console.log(`> Running TWAP...`)
         while (1) {
           const [fromTokenBalance] = await Promise.all([fromToken.balanceOf(signerAddress)])
-          const randFactor = true
-          if (randFactor) {
-            // If rand said sell, then swap
-            const swapAmount = fromTokenBalance.lt(amountWei) ? fromTokenBalance : amountWei
-            try {
-              await oneInchWrapper.swapExactTokensForTokens(fromToken.address, toToken.address, [], swapAmount, 25, 3)
-              console.log(`> 🟢 Done`)
-            } catch (e) {
-              console.log(`> 🔴 Something wrong!`)
-              console.error(e)
-              console.log(`> 🟡 Retry in the next execution`)
-            }
-          } else {
-            console.log(`> 🟡 Skip this execution`)
+          const jitterAmount = Math.floor(Math.random() * opts.amount) + opts.amount / 2
+          const amountWei = ethers.utils.parseUnits(jitterAmount.toString(), fromDecimals)
+          console.log(`> Twapping ${jitterAmount} ${fromTokenSymbol} -> ${toTokenSymbol} per tx`)
+          const swapAmount = fromTokenBalance.lt(amountWei) ? fromTokenBalance : amountWei
+          try {
+            await oneInchWrapper.swapExactTokensForTokens(fromToken.address, toToken.address, [], swapAmount, 25, 3)
+            console.log(`> 🟢 Done`)
+          } catch (e) {
+            console.log(`> 🔴 Something wrong!`)
+            console.error(e)
+            console.log(`> 🟡 Retry in the next execution`)
           }
-          console.log(`> 🟡 Sleep for 15 minutes`)
-          await sleep(900000)
+          const jitterSleep = Math.floor(Math.random() * 15) + 3
+          console.log(`> 🟡 Sleep for ${jitterSleep} minutes`)
+          await sleep(jitterSleep * 60 * 1_000)
         }
       })
   }
