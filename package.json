@@ -1,5 +1,5 @@
 {
-  "name": "w3-cli-ts",
+  "name": "w3-cmd-ts",
   "version": "0.0.5",
   "main": "./dist/index.js",
   "scripts": {
