@@ -46,3 +46,21 @@ export interface SwapResult {
   toTokenDecimals: ethers.BigNumberish
   toTokenAmount: ethers.BigNumberish
 }
+
+export interface OneInchTokenInfo {
+  address: string
+  symbol: string
+  name: string
+  decimals: number
+  logoURI: string
+  domainVersion: string
+  eip2612: string
+  isFoT: boolean
+  tags: string[]
+}
+
+export interface OneInchQuote {
+  fromToken: OneInchTokenInfo
+  toToken: OneInchTokenInfo
+  toAmount: ethers.BigNumberish
+}

@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { BigNumber, BigNumberish, ethers, Overrides, providers, Signer } from 'ethers'
-import { OneInchSpender, OneInchSwap } from './interface'
+import { OneInchQuote, OneInchSpender, OneInchSwap } from './interface'
 import { SwapResult } from './interface'
 import { MulticallWrapper } from '../MulticallWrapper'
 import { sleep } from '../../utils/time'
@@ -244,5 +244,26 @@ export class OneInchWrapper {
     ).data as OneInchSwap
 
     return oneInchData
+  }
+
+  async getQuote(
+    fromTokenAddress: string,
+    toTokenAddress: string,
+    amountWei: ethers.BigNumberish,
+  ): Promise<{ toAmountWei: ethers.BigNumber; toAmount: number }> {
+    const oneInchResp = (
+      await axios.get(`${this.oneInchApiUrl}/${this.chainId}/quote`, {
+        params: {
+          src: fromTokenAddress,
+          dst: toTokenAddress,
+          amount: amountWei.toString(),
+        },
+      })
+    ).data as OneInchQuote
+
+    return {
+      toAmountWei: ethers.BigNumber.from(oneInchResp.toAmount),
+      toAmount: parseFloat(ethers.utils.formatUnits(oneInchResp.toAmount, oneInchResp.toToken.decimals)),
+    }
   }
 }

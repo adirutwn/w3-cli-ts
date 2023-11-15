@@ -31,6 +31,7 @@ export class OneInchCmd implements Cmd {
       .requiredOption('-ft, --fromToken <fromTokenAddress>', 'The token to swap from')
       .requiredOption('-tt, --toToken <toTokenAddress>', 'The token to swap to')
       .requiredOption('-a, --amount <amount>', 'The amount to swap', parseFloat)
+      .option('--trigger-price', 'Trigger price (in toToken)', parseFloat)
       .requiredOption('-s, --signer <signerLabel>', 'Signer to execute a transaction')
       .action(async (opts: TwapOpts) => {
         const chain = chainInfo[opts.chainId]
@@ -69,6 +70,21 @@ export class OneInchCmd implements Cmd {
           console.log(`> Twapping ${jitterAmount} ${fromTokenSymbol} -> ${toTokenSymbol} per tx`)
           const swapAmount = fromTokenBalance.lt(amountWei) ? fromTokenBalance : amountWei
           try {
+            // Check trigger price if needed
+            if (opts.triggerPrice) {
+              const swapAmountFloat = parseFloat(ethers.utils.formatUnits(swapAmount, fromDecimals))
+              const { toAmount } = await oneInchWrapper.getQuote(fromToken.address, toToken.address, swapAmount)
+              const price = toAmount / swapAmountFloat
+
+              if (price > opts.triggerPrice) {
+                console.log(`> 🟡 Trigger price reached: ${price} > ${opts.triggerPrice}`)
+                console.log(`> 🟡 Retry in the next execution`)
+                console.log(`> 🟡 Sleep for 2 seconds`)
+                await sleep(2 * 1_000)
+                continue
+              }
+            }
+
             await oneInchWrapper.swapExactTokensForTokens(fromToken.address, toToken.address, [], swapAmount, 25, 3)
             console.log(`> 🟢 Done`)
           } catch (e) {

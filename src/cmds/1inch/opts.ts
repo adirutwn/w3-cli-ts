@@ -3,5 +3,6 @@ export interface TwapOpts {
   fromToken: string
   toToken: string
   amount: number
+  triggerPrice: number
   signer: string
 }
