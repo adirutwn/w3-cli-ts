@@ -15,6 +15,9 @@ export class AccountRepo {
 
   async getAllAccounts(): Promise<Array<Account>> {
     const accounts = (await this.store.ref(this.node).get()).val()
+    if (accounts == null) {
+      return []
+    }
     return accounts
   }
 
@@ -45,7 +48,7 @@ export class AccountRepo {
         }
       }
     }
-
-    await this.store.ref(this.node).set(addedAccounts.concat(accounts))
+    addedAccounts.push(...accounts)
+    await this.store.ref(this.node).set(addedAccounts)
   }
 }
