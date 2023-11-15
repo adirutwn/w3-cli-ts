@@ -26,4 +26,10 @@ export default {
     jsonRpcProvider: new ethers.providers.JsonRpcProvider('https://arbitrum-goerli.publicnode.com'),
     nativeSymbol: 'ETH',
   },
+  56: {
+    name: 'bsc',
+    rpcUrl: 'https://bsc-dataseed1.binance.org',
+    jsonRpcProvider: new ethers.providers.JsonRpcProvider('https://bsc-dataseed1.binance.org'),
+    nativeSymbol: 'BNB',
+  },
 } as { [chainId: number]: ChainEntity }
