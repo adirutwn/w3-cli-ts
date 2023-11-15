@@ -135,14 +135,14 @@ export class OneInchWrapper {
     console.log('> Check if one inch swap contract has allowance')
     if (fromTokenAllowance.lt(amountWei)) {
       console.log('> Approve one inch swap contract')
-      let gas = undefined
+      let gasPrice = undefined
       if (this.chainId === 56) {
         // If BSC, force gas to be 3.5 gwei
-        gas = ethers.utils.parseUnits('3.5', 'gwei')
+        gasPrice = ethers.utils.parseUnits('3.5', 'gwei')
       }
       const approveTx = await fromToken.approve(oneInchSpender.address, ethers.constants.MaxUint256, {
         nonce: nonce++,
-        gas,
+        gasPrice,
       })
       await approveTx.wait(confirmation)
     }
