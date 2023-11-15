@@ -46,6 +46,6 @@ export class AccountRepo {
       }
     }
 
-    await this.store.ref(this.node).set(accounts)
+    await this.store.ref(this.node).set(addedAccounts.concat(accounts))
   }
 }
