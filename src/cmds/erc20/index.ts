@@ -44,8 +44,16 @@ export class Erc20Cmd implements Cmd {
           { contract: token, function: 'decimals' },
         ])
 
+        let gasPrice = undefined
+        if (opts.chainId == 56) {
+          // if chain is BSC, set gas price to 3.5 gwei
+          gasPrice = ethers.utils.parseUnits('3.5', 'gwei')
+        }
+
         this.spinner.start(`Transferring ${opts.amount} ${tokenInfo[0]} to ${opts.to}`)
-        const tx = await token.transfer(opts.to, ethers.utils.parseUnits(opts.amount.toString(), tokenInfo[1]))
+        const tx = await token.transfer(opts.to, ethers.utils.parseUnits(opts.amount.toString(), tokenInfo[1]), {
+          gasPrice,
+        })
         this.spinner.info(`⛓️ Tx hash: ${tx.hash}, waiting for confirmation`)
         await tx.wait(3)
         this.spinner.succeed(`Transfer ${opts.amount} ${tokenInfo[0]} to ${opts.to} succeeded`)
