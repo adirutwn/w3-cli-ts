@@ -13,6 +13,7 @@ import { Erc20Cmd } from './cmds/erc20'
 import { NativeCmd } from './cmds/native'
 import { ChainCmd } from './cmds/chain'
 import { YoloCmd } from './cmds/yolo'
+import { HmxCmd } from './cmds/hmx'
 
 const program = new Command()
 program.description('A CLI for interacting with Web3 protocols')
@@ -32,6 +33,7 @@ const erc20Cmd = new Erc20Cmd(accountRepo, spinner)
 const nativeCmd = new NativeCmd(accountRepo, spinner)
 const chainCmd = new ChainCmd(spinner)
 const yoloCmd = new YoloCmd(accountRepo, configRepo, spinner)
+const hmxCmd = new HmxCmd(accountRepo)
 
 program.addCommand(accountCmd.getCmdInstance())
 program.addCommand(configCmd.getCmdInstance())
@@ -40,6 +42,7 @@ program.addCommand(erc20Cmd.getCmdInstance())
 program.addCommand(nativeCmd.getCmdInstance())
 program.addCommand(chainCmd.getCmdInstance())
 program.addCommand(yoloCmd.getCmdInstance())
+program.addCommand(hmxCmd.getCmdInstance())
 
 async function main() {
   await store.ready()

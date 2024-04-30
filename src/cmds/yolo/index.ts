@@ -130,8 +130,22 @@ export class YoloCmd implements Cmd {
 
               console.log(`> Round ${currentEpoch} is enterable and we not entered yet`)
               console.log(`> Entering round ${currentEpoch} as Moon and Doom...`)
-              console.log(`> Sleep 1.5 seconds to make sure nonce is ok`)
-              await sleep(1.5 * 1000)
+
+              const [moonBalance, doomBalance] = await Promise.all([moonSigner.getBalance(), doomSigner.getBalance()])
+
+              if (
+                moonBalance.lt(ethers.utils.parseEther(opts.amount.toString())) ||
+                doomBalance.lt(ethers.utils.parseEther(opts.amount.toString()))
+              ) {
+                console.log(`> 🔴 Not enough balance to enter the round`)
+                console.log(`> 🟡 Retry in the next execution`)
+                console.log(`> 🟡 Sleep for 10 seconds`)
+                await sleep(10 * 1000)
+                continue
+              }
+
+              console.log(`> Sleep 5 seconds to make sure nonce is ok`)
+              await sleep(5 * 1000)
               const txs = await Promise.all([
                 moonOrDoomAsMoonSigner.enterMoon(currentEpoch, {
                   value: ethers.utils.parseEther(opts.amount.toString()),
