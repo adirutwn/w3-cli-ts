@@ -50,7 +50,7 @@ export class AccountCmd implements Cmd {
         accounts.map((account) => ({
           label: account.label,
           address: account.address,
-          key: '*****',
+          key: account.key,
         })),
       )
     })

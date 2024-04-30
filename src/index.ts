@@ -12,6 +12,7 @@ import { OneInchCmd } from './cmds/1inch'
 import { Erc20Cmd } from './cmds/erc20'
 import { NativeCmd } from './cmds/native'
 import { ChainCmd } from './cmds/chain'
+import { YoloCmd } from './cmds/yolo'
 
 const program = new Command()
 program.description('A CLI for interacting with Web3 protocols')
@@ -30,6 +31,7 @@ const oneInchCmd = new OneInchCmd(accountRepo, configRepo, spinner)
 const erc20Cmd = new Erc20Cmd(accountRepo, spinner)
 const nativeCmd = new NativeCmd(accountRepo, spinner)
 const chainCmd = new ChainCmd(spinner)
+const yoloCmd = new YoloCmd(accountRepo, configRepo, spinner)
 
 program.addCommand(accountCmd.getCmdInstance())
 program.addCommand(configCmd.getCmdInstance())
@@ -37,6 +39,7 @@ program.addCommand(oneInchCmd.getCmdInstance())
 program.addCommand(erc20Cmd.getCmdInstance())
 program.addCommand(nativeCmd.getCmdInstance())
 program.addCommand(chainCmd.getCmdInstance())
+program.addCommand(yoloCmd.getCmdInstance())
 
 async function main() {
   await store.ready()

@@ -32,4 +32,10 @@ export default {
     jsonRpcProvider: new ethers.providers.JsonRpcProvider('https://bsc-dataseed1.binance.org'),
     nativeSymbol: 'BNB',
   },
+  81457: {
+    name: 'blast',
+    rpcUrl: 'https://rpc.blast.io',
+    jsonRpcProvider: new ethers.providers.JsonRpcProvider('https://rpc.blast.io'),
+    nativeSymbol: 'ETH',
+  },
 } as { [chainId: number]: ChainEntity }

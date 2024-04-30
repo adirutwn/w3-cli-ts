@@ -64,12 +64,13 @@ export class OneInchCmd implements Cmd {
         // watch
         console.log(`> Running TWAP...`)
         while (1) {
-          const [fromTokenBalance] = await Promise.all([fromToken.balanceOf(signerAddress)])
-          const jitterAmount = Math.floor(Math.random() * opts.amount) + opts.amount / 2
-          const amountWei = ethers.utils.parseUnits(jitterAmount.toString(), fromDecimals)
-          console.log(`> Twapping ${jitterAmount} ${fromTokenSymbol} -> ${toTokenSymbol} per tx`)
-          const swapAmount = fromTokenBalance.lt(amountWei) ? fromTokenBalance : amountWei
           try {
+            // Check balance and come up with a swap amount
+            const [fromTokenBalance] = await Promise.all([fromToken.balanceOf(signerAddress)])
+            const jitterAmount = Math.floor(Math.random() * opts.amount) + opts.amount / 2
+            const amountWei = ethers.utils.parseUnits(jitterAmount.toString(), fromDecimals)
+            console.log(`> Twapping ${jitterAmount} ${fromTokenSymbol} -> ${toTokenSymbol} per tx`)
+            const swapAmount = fromTokenBalance.lt(amountWei) ? fromTokenBalance : amountWei
             // Check trigger price if needed
             if (opts.triggerPrice) {
               const swapAmountFloat = parseFloat(ethers.utils.formatUnits(swapAmount, fromDecimals))
